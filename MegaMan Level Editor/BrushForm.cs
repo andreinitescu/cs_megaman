@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using MegaMan.Common;
+using Color = System.Drawing.Color;
 
 namespace MegaMan.LevelEditor
 {
@@ -26,14 +27,14 @@ namespace MegaMan.LevelEditor
             Clear();
             Tileset = tileset;
             if (tileset == null) brushes = null;
-            else if (brushSets.ContainsKey(tileset.FilePath))
+            else if (brushSets.ContainsKey(tileset.FilePath.Absolute))
             {
-                brushes = brushSets[tileset.FilePath];
+                brushes = brushSets[tileset.FilePath.Absolute];
             }
             else
             {
                 brushes = new List<ITileBrush>();
-                brushSets.Add(tileset.FilePath, brushes);
+                brushSets.Add(tileset.FilePath.Absolute, brushes);
                 LoadBrushes();
             }
 
@@ -54,8 +55,8 @@ namespace MegaMan.LevelEditor
 
         private void SaveBrushes()
         {
-            string dir = System.IO.Path.GetDirectoryName(Tileset.FilePath);
-            string file = System.IO.Path.GetFileNameWithoutExtension(Tileset.FilePath);
+            string dir = System.IO.Path.GetDirectoryName(Tileset.FilePath.Absolute);
+            string file = System.IO.Path.GetFileNameWithoutExtension(Tileset.FilePath.Absolute);
             string path = System.IO.Path.Combine(dir, file + "_brushes.xml");
 
             using (var stream = new System.IO.StreamWriter(path, false))
@@ -78,8 +79,8 @@ namespace MegaMan.LevelEditor
 
         private void LoadBrushes()
         {
-            string dir = System.IO.Path.GetDirectoryName(Tileset.FilePath);
-            string file = System.IO.Path.GetFileNameWithoutExtension(Tileset.FilePath);
+            string dir = System.IO.Path.GetDirectoryName(Tileset.FilePath.Absolute);
+            string file = System.IO.Path.GetFileNameWithoutExtension(Tileset.FilePath.Absolute);
             string path = System.IO.Path.Combine(dir, file + "_brushes.xml");
 
             if (!System.IO.File.Exists(path)) return;
