@@ -97,7 +97,8 @@ namespace MegaMan.LevelEditor
 
         public void ChangeTileset(string path)
         {
-            map.ChangeTileset(path);
+            var tmpSet = Tileset.Load(FilePath.FromAbsolute(path, map.StagePath.BasePath));
+            map.ChangeTileset(tmpSet);
             Dirty = true;
         }
 
@@ -147,7 +148,7 @@ namespace MegaMan.LevelEditor
                 tiles[y] = new int[tile_width];
             }
 
-            screen.Layers.Add(new ScreenLayerInfo(name, new TileLayer(tiles, Tileset, 0, 0), new List<EntityPlacement>(), new List<ScreenLayerKeyframe>()));
+            screen.Layers.Add(new ScreenLayerInfo(name, new TileLayer(Utils.To2D(tiles), Tileset, 0, 0), new List<EntityPlacement>(), new List<ScreenLayerKeyframe>()));
 
             map.Screens.Add(name, screen);
 

@@ -2,8 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using MegaMan.Common.Geometry;
 using MegaMan.Common.Rendering;
+using System.IO;
+using System.Xml.Linq;
+
+using DrawPoint     = MegaMan.Common.Geometry.Point;
+using Point         = MegaMan.Common.Geometry.Point;
+using RectangleF    = MegaMan.Common.Geometry.RectangleF;
+using Rectangle    = MegaMan.Common.Geometry.Rectangle;
 
 namespace MegaMan.Common
 {
@@ -15,7 +21,7 @@ namespace MegaMan.Common
         private List<SpriteFrame> frames;
         private int currentFrame;
         private int lastFrameTime;
-
+        protected FilePath sheetPath;
         private IResourceImage texture;
 
         /// <summary>
@@ -82,7 +88,17 @@ namespace MegaMan.Common
 
         public int Layer { get; set; }
 
-        public virtual FilePath SheetPath { get; set; }
+        public virtual FilePath SheetPath
+        {
+            get
+            {
+                return this.sheetPath;
+            }
+            set
+            {
+                this.sheetPath = value;
+            }
+        }
         public virtual string SheetPathRelative { get { return SheetPath != null ? SheetPath.Relative : null; } }
 
         /// <summary>
@@ -419,6 +435,93 @@ namespace MegaMan.Common
         }
 
         #endregion
+        
+        public static Sprite FromXml(XElement element, string basePath)
+        {
+            XAttribute tileattr = element.RequireAttribute("tilesheet");
+            Sprite sprite;
+    
+            string sheetPath = Path.Combine(basePath, tileattr.Value);
+            sprite = FromXml(element);
+            sprite.sheetPath = FilePath.FromRelative(tileattr.Value, basePath);
+            return sprite;
+        }
+    
+        public static Sprite FromXml(XElement element)
+        {
+            int width = Int32.Parse(element.Attribute("width").Value);
+            int height = Int32.Parse(element.Attribute("height").Value);
+    
+            Sprite sprite = new Sprite(width, height);
+    
+            XAttribute nameAttr = element.Attribute("name");
+            if (nameAttr != null) sprite.Name = nameAttr.Value;
+    
+            XAttribute paletteAttr = element.Attribute("palette");
+            if (paletteAttr != null)
+            {
+                sprite.PaletteName = paletteAttr.Value;
+            }
+    
+            XAttribute revAttr = element.Attribute("reversed");
+            if (revAttr != null)
+            {
+                bool r;
+                if (bool.TryParse(revAttr.Value, out r)) sprite.Reversed = r;
+            }
+    
+            XElement hotspot = element.Element("Hotspot");
+            if (hotspot != null)
+            {
+                int hx = Int32.Parse(hotspot.RequireAttribute("x").Value);
+                int hy = Int32.Parse(hotspot.RequireAttribute("y").Value);
+                sprite.HotSpot = new DrawPoint(hx, hy);
+            }
+            else
+            {
+                sprite.HotSpot = new DrawPoint(0, 0);
+            }
+    
+            int layer = 1;
+            var layTmp = element.Attribute("layer");
+            if (layTmp != null)
+            {
+                layer = Int32.Parse(layTmp.Value);
+                sprite.Layer = layer;
+            }
+            //if (element.TryInteger("layer", out layer)) sprite.Layer = layer;
+    
+            XElement stylenode = element.Element("AnimStyle");
+            if (stylenode != null)
+            {
+                string style = stylenode.Value;
+                switch (style)
+                {
+                    case "Bounce": sprite.AnimStyle = AnimationStyle.Bounce; break;
+                    case "PlayOnce": sprite.AnimStyle = AnimationStyle.PlayOnce; break;
+                }
+            }
+    
+            foreach (XElement frame in element.Elements("Frame"))
+            {
+                int duration = 0;
+                var durTmp = frame.Attribute("duration");
+                if (durTmp != null)
+                    duration = Int32.Parse(durTmp.Value);
+                //frame.TryInteger("duration", out duration);
+                int x = Int32.Parse(frame.Attribute("x").Value);
+                int y = Int32.Parse(frame.Attribute("y").Value);
+                sprite.AddFrame(x, y, duration);
+            }
+    
+            if (sprite.frames.Count == 0)
+            {
+                sprite.AddFrame(0, 0, 0);
+            }
+    
+            return sprite;
+        }
+        
     }
 
     public class SpriteFrame
@@ -454,6 +557,11 @@ namespace MegaMan.Common
         public void SetSheetPosition(int x, int y)
         {
             SheetLocation = new Rectangle(x, y, sprite.Width, sprite.Height);
+        }
+        
+        public void SetSheetPosition(Rectangle rect)
+        {
+            SheetLocation = rect;
         }
     }
 

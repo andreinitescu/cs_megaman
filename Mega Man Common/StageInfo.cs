@@ -86,6 +86,14 @@ namespace MegaMan.Common
             Joins = new List<Join>();
             continuePoints = new Dictionary<string, Point>();
         }
+        
+        public StageInfo(FilePath filePath)
+        {
+            StagePath = filePath;
+            Screens = new Dictionary<string, ScreenInfo>();
+            Joins = new List<Join>();
+            continuePoints = new Dictionary<string, Point>();   
+        }
 
         public void RenameScreen(ScreenInfo screen, string name)
         {

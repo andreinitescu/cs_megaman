@@ -6,6 +6,7 @@ namespace MegaMan.IO.Xml
 {
     public class TilesetXmlReader : GameXmlReader, ITilesetReader
     {
+        public TilesetXmlReader() {}
         public Tileset Load(FilePath path)
         {
             var tileset = new Tileset();

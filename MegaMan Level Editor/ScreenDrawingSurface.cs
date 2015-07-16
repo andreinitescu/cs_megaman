@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using MegaMan.Common;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using Color = System.Drawing.Color;
 
 namespace MegaMan.LevelEditor
 {

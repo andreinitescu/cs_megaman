@@ -149,7 +149,16 @@ namespace MegaMan.Common.Geometry
             Width = width;
             Height = height;
         }
-
+        
+        public Rectangle(System.Drawing.Point point, System.Drawing.Size size)
+        {
+            X = point.X;
+            Y = point.Y;
+            Width = size.Width;
+            Height = size.Height;
+            
+        }
+        
         public override bool Equals(object obj)
         {
             if (!(obj is RectangleF))
