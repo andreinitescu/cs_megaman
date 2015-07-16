@@ -30,13 +30,21 @@ namespace MegaMan.Common
         public string Name { get; set; }
         public Dictionary<string, IHandlerObjectInfo> Objects { get; private set; }
 
+        private static XmlTextWriter writerInstance;
+
         public HandlerInfo()
         {
             this.Objects = new Dictionary<string, IHandlerObjectInfo>();
         }
 
+        public virtual void Save()
+        {
+            this.Save(writerInstance);
+        }
+
         public virtual void Save(XmlTextWriter writer)
         {
+            writerInstance = writer;
             foreach (var obj in Objects.Values)
             {
                 obj.Save(writer);
