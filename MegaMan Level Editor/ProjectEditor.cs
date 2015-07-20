@@ -146,9 +146,9 @@ namespace MegaMan.LevelEditor
 
         private void LoadIncludes()
         {
-            foreach (string path in Project.Includes)
+            foreach (FilePath path in Project.Includes)
             {
-                string fullpath = Path.Combine(BaseDir, path);
+                string fullpath = Path.Combine(BaseDir, path.Relative);
                 XDocument document = XDocument.Load(fullpath, LoadOptions.SetLineInfo);
                 foreach (XElement element in document.Elements())
                 {

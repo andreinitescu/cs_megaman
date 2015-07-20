@@ -117,5 +117,10 @@ namespace MegaMan.Common
         {
             return this.Absolute.GetHashCode();
         }
+        
+        public override string ToString()
+        {
+            return this.Absolute;
+        }
     }
 }

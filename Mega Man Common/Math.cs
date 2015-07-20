@@ -389,6 +389,11 @@ namespace MegaMan.Common.Geometry
         {
             return this.Contains(pt.X, pt.Y);
         }
+        
+        public bool Contains(System.Drawing.PointF pt)
+        {
+            return this.Contains(pt.X, pt.Y);
+        }
 
         public bool Contains(RectangleF rect)
         {

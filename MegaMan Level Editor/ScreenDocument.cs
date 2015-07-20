@@ -131,11 +131,11 @@ namespace MegaMan.LevelEditor
         private bool EntityBounded(EntityPlacement entityInfo, Point location)
         {
             Entity entity = Stage.Project.EntityByName(entityInfo.entity);
-            RectangleF bounds;
+            MegaMan.Common.Geometry.RectangleF bounds;
 
             if (entity.MainSprite == null)
             {
-                bounds = new RectangleF(-8, -8, 16, 16);
+                bounds = new MegaMan.Common.Geometry.RectangleF(-8, -8, 16, 16);
             }
             else
             {
