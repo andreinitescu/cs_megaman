@@ -106,7 +106,7 @@ namespace MegaMan.LevelEditor
         public static ProjectEditor FromFile(string path)
         {
             var p = new ProjectEditor();
-            p.Project.Load(path);
+            //p.Project.Load(path);
             p.LoadIncludes();
             return p;
         }
@@ -148,7 +148,7 @@ namespace MegaMan.LevelEditor
         {
             foreach (FilePath path in Project.Includes)
             {
-                string fullpath = Path.Combine(BaseDir, path.Relative);
+                string fullpath = Path.Combine(BaseDir, path.ToString());
                 XDocument document = XDocument.Load(fullpath, LoadOptions.SetLineInfo);
                 foreach (XElement element in document.Elements())
                 {
@@ -207,7 +207,7 @@ namespace MegaMan.LevelEditor
 
         public void Save()
         {
-            Project.Save();
+            //Project.Save();
             Dirty = false;
         }
 
